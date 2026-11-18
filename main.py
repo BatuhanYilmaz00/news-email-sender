@@ -1,4 +1,3 @@
-from email.mime.multipart import MIMEMultipart
 
 import requests
 #requests library used for API
@@ -23,7 +22,7 @@ def send_email(message):
 
 
 api_key = "......"
-url = "......"
+url = f"https://newsapi.org/v2/everything?q=tesla&from=2026-10-18&sortBy=publishedAt&apiKey={api_key}&language=en"
 
 
 # Make request
@@ -35,9 +34,12 @@ content = request.json()
 # Access the article title and description
 #print(content["articles"])
 body = ""
-for article in content["articles"]:
+for article in content["articles"][:20]:
     if article["title"] is not None:
-        body = body + article["title"] + "\n" + article["description"] + 2*"\n"
+        body =("Subject: Today's news" + "\n" +
+               body + article["title"] + "\n" +
+               article["description"] + "\n"+
+               article["url"]  + 2*"\n")
 
 body = body.encode("utf-8")
 send_email(message=body)
